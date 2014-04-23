@@ -13,7 +13,7 @@
 
     for(var i=0; i< words.length; i++){
       var $div = $('<div>').addClass('text-box');
-      if(words[i]%2){
+      if(words[i].length%2){
         $div.text(words[i].toLowerCase()).addClass('red');
         $('#result').append($div);
       }else{
