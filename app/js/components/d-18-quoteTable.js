@@ -1,6 +1,11 @@
 /** @jsx React.DOM */
-
 var Quote = React.createClass({
+  startTimer: function(){
+    clearInterval(this.timer);
+    this.timer = setInterval(function(){
+      this.quoteAJAX(this.props.symbol);
+    }.bind(this), 5000);
+  },
   quoteAJAX: function(stockSymbol){
     var url = 'http://dev.markitondemand.com/Api/v2/Quote/jsonp?symbol='+ stockSymbol +'&callback=?';
     $.getJSON(url, function(data){
@@ -8,10 +13,15 @@ var Quote = React.createClass({
     }.bind(this));
   },
   render: function(){
+    this.startTimer();
+    return <td id={this.props.symbol}></td>
+  }
+});
+var QuoteBody = React.createClass({
+  render: function(){
     //debugger;
     var createQuote = function(stockSymbol){
-      this.quoteAJAX(stockSymbol);
-      return <tr><td>{stockSymbol}</td><td id={stockSymbol}></td></tr>;
+      return <tr><td>{stockSymbol}</td><Quote symbol={stockSymbol}/></tr>;
     }.bind(this);
     return <tbody>{this.props.symbols.map(createQuote)}</tbody>;
   }
@@ -33,14 +43,14 @@ var QuoteTable = React.createClass({
   },
   render: function(){
     return(
-      <div>
+      <div className='QuoteBox'>
         <div>
           <input id='textInput' />
           <button onClick={this.handleSubmit}>Update Table</button>
         </div>
         <table className='QuoteTable'>
           <thead><th>Symbol</th><th>Quote</th></thead>
-            <Quote symbols={this.state.symbols} />
+            <QuoteBody symbols={this.state.symbols} />
         </table>
       </div>
     );
